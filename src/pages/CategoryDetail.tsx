@@ -222,49 +222,49 @@ const CategoryDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50 to-purple-100 p-6">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50 to-purple-100 p-3 sm:p-4 lg:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Link to="/">
             <Button
               variant="outline"
-              className="bg-white border-purple-200 text-purple-700 hover:bg-purple-50 rounded-full"
+              className="bg-white border-purple-200 text-purple-700 hover:bg-purple-50 rounded-full text-xs sm:text-sm"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               Back
             </Button>
           </Link>
-          <h1 className="text-3xl font-extrabold text-purple-700 tracking-tight drop-shadow-sm font-sans">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-purple-700 tracking-tight drop-shadow-sm font-sans">
             {categoryName}
           </h1>
         </div>
         <div className="flex gap-2">
           <Button
-            className="bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-full font-semibold shadow"
+            className="bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-full font-semibold shadow text-xs sm:text-sm"
             onClick={() => setShowAddForm(true)}
           >
-            <Plus className="h-5 w-5 mr-2" /> Add Item
+            <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> Add Item
           </Button>
           <Button
             variant="outline"
-            className="bg-red-50 border-red-200 text-red-600 hover:bg-red-100 rounded-full font-semibold shadow"
+            className="bg-red-50 border-red-200 text-red-600 hover:bg-red-100 rounded-full font-semibold shadow text-xs sm:text-sm"
             onClick={handleDeleteCategory}
           >
-            <Trash2 className="h-5 w-5 mr-2" /> Delete Category
+            <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> Delete Category
           </Button>
         </div>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
         {items.map(item => (
           <div
             key={item.id}
-            className="bg-white border border-purple-200 rounded-2xl shadow-lg p-4 flex flex-col items-center transition-transform hover:-translate-y-1 hover:shadow-2xl group relative"
+            className="bg-white border border-purple-200 rounded-2xl shadow-lg p-3 sm:p-4 flex flex-col items-center transition-transform hover:-translate-y-1 hover:shadow-2xl group relative"
           >
             <div className="aspect-square w-full bg-purple-50 rounded-xl overflow-hidden mb-3 border-2 border-purple-100 group-hover:border-purple-300 transition-all">
               <img src={item.image_url || ''} alt={item.name} className="w-full h-full object-cover" />
             </div>
-            <div className="text-purple-700 font-semibold text-lg text-center font-sans group-hover:text-purple-900 transition-colors">
+            <div className="text-purple-700 font-semibold text-sm sm:text-base lg:text-lg text-center font-sans group-hover:text-purple-900 transition-colors">
               {item.name}
             </div>
             {/* Delete button */}
@@ -273,7 +273,7 @@ const CategoryDetail = () => {
               onClick={() => handleDeleteItem(item.id)}
               title="Delete item"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -282,15 +282,15 @@ const CategoryDetail = () => {
       </div>
       
       {items.length === 0 && (
-        <div className="text-center py-12">
+        <div className="text-center py-8 sm:py-12">
           <div className="flex flex-col items-center">
             <img 
               src={CATEGORY_IMAGES[categoryName as keyof typeof CATEGORY_IMAGES] || CATEGORY_IMAGES["Jeans"]} 
               alt={categoryName}
-              className="w-32 h-32 object-cover rounded-xl mb-4 opacity-60"
+              className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-xl mb-4 opacity-60"
             />
-            <p className="text-purple-300 text-lg">No items in this category yet.</p>
-            <p className="text-purple-200 text-sm mt-2">Click "Add Item" to get started!</p>
+            <p className="text-purple-300 text-base sm:text-lg">No items in this category yet.</p>
+            <p className="text-purple-200 text-xs sm:text-sm mt-2">Click "Add Item" to get started!</p>
           </div>
         </div>
       )}

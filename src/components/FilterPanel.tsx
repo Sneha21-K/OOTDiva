@@ -32,14 +32,14 @@ export const FilterPanel = ({
   const hasActiveFilters = selectedCategories.length > 0 || selectedSeasons.length > 0 || showFavoritesOnly;
 
   return (
-    <Card className="w-full lg:w-80">
+    <Card className="w-full lg:w-80 order-first lg:order-none">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-lg">Filters</CardTitle>
+        <CardTitle className="text-base sm:text-lg">Filters</CardTitle>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="h-4 w-4" />
         </Button>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4 sm:space-y-6">
         {hasActiveFilters && (
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">
@@ -51,9 +51,9 @@ export const FilterPanel = ({
           </div>
         )}
 
-        <div className="space-y-3">
-          <h4 className="font-medium">Categories</h4>
-          <div className="space-y-2">
+        <div className="space-y-2 sm:space-y-3">
+          <h4 className="font-medium text-sm sm:text-base">Categories</h4>
+          <div className="space-y-1 sm:space-y-2">
             {categories.map(category => (
               <div key={category} className="flex items-center space-x-2">
                 <Checkbox
@@ -61,7 +61,7 @@ export const FilterPanel = ({
                   checked={selectedCategories.includes(category)}
                   onCheckedChange={(checked) => onCategoryChange(category, checked as boolean)}
                 />
-                <label htmlFor={`category-${category}`} className="text-sm">
+                <label htmlFor={`category-${category}`} className="text-xs sm:text-sm">
                   {category}
                 </label>
               </div>
@@ -69,9 +69,9 @@ export const FilterPanel = ({
           </div>
         </div>
 
-        <div className="space-y-3">
-          <h4 className="font-medium">Seasons</h4>
-          <div className="space-y-2">
+        <div className="space-y-2 sm:space-y-3">
+          <h4 className="font-medium text-sm sm:text-base">Seasons</h4>
+          <div className="space-y-1 sm:space-y-2">
             {seasons.map(season => (
               <div key={season} className="flex items-center space-x-2">
                 <Checkbox
@@ -79,7 +79,7 @@ export const FilterPanel = ({
                   checked={selectedSeasons.includes(season)}
                   onCheckedChange={(checked) => onSeasonChange(season, checked as boolean)}
                 />
-                <label htmlFor={`season-${season}`} className="text-sm">
+                <label htmlFor={`season-${season}`} className="text-xs sm:text-sm">
                   {season}
                 </label>
               </div>
@@ -87,15 +87,15 @@ export const FilterPanel = ({
           </div>
         </div>
 
-        <div className="space-y-3">
-          <h4 className="font-medium">Preferences</h4>
+        <div className="space-y-2 sm:space-y-3">
+          <h4 className="font-medium text-sm sm:text-base">Preferences</h4>
           <div className="flex items-center space-x-2">
             <Checkbox
               id="favorites-only"
               checked={showFavoritesOnly}
               onCheckedChange={onFavoritesToggle}
             />
-            <label htmlFor="favorites-only" className="text-sm">
+            <label htmlFor="favorites-only" className="text-xs sm:text-sm">
               Show favorites only
             </label>
           </div>

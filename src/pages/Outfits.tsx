@@ -143,37 +143,37 @@ const Outfits = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50 to-purple-100 p-6">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50 to-purple-100 p-3 sm:p-4 lg:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Link to="/">
             <Button
               variant="outline"
-              className="bg-white border-purple-200 text-purple-700 hover:bg-purple-50 rounded-full"
+              className="bg-white border-purple-200 text-purple-700 hover:bg-purple-50 rounded-full text-xs sm:text-sm"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               Back
             </Button>
           </Link>
-          <h1 className="text-3xl font-extrabold text-purple-700 tracking-tight drop-shadow-sm font-sans">Outfits</h1>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-purple-700 tracking-tight drop-shadow-sm font-sans">Outfits</h1>
         </div>
         <Button
-          className="bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-full font-semibold shadow"
+          className="bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-full font-semibold shadow text-xs sm:text-sm"
           onClick={() => setShowAddForm(true)}
         >
-          <Plus className="h-5 w-5 mr-2" /> Add Outfit
+          <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> Add Outfit
         </Button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
         {outfits.map(outfit => (
           <div
             key={outfit.id}
-            className="bg-white border border-purple-200 rounded-2xl shadow-lg p-4 flex flex-col items-center transition-transform hover:-translate-y-1 hover:shadow-2xl group relative"
+            className="bg-white border border-purple-200 rounded-2xl shadow-lg p-3 sm:p-4 flex flex-col items-center transition-transform hover:-translate-y-1 hover:shadow-2xl group relative"
           >
             <div className="aspect-square w-full bg-purple-50 rounded-xl overflow-hidden mb-3 border-2 border-purple-100 group-hover:border-purple-300 transition-all">
               <img src={outfit.image_url || ''} alt={outfit.name} className="w-full h-full object-cover" />
             </div>
-            <div className="text-purple-700 font-semibold text-lg text-center font-sans group-hover:text-purple-900 transition-colors">
+            <div className="text-purple-700 font-semibold text-sm sm:text-base lg:text-lg text-center font-sans group-hover:text-purple-900 transition-colors">
               {outfit.name}
             </div>
             {/* Delete button */}
@@ -182,7 +182,7 @@ const Outfits = () => {
               onClick={() => handleDeleteOutfit(outfit.id)}
               title="Delete outfit"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>

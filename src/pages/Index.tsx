@@ -9,9 +9,10 @@ import { ClothingItemType, WardrobeStats as StatsType } from "@/types/wardrobe";
 import { CategoryItem, categoryItemsAPI, categoriesAPI } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Camera } from "lucide-react";
 import { AddOutfitForm } from "@/components/AddOutfitForm";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { MobileImagePicker } from "@/components/MobileImagePicker";
 import { Link } from "react-router-dom";
 import WelcomeScreen from "@/components/WelcomeScreen";
 
@@ -56,6 +57,7 @@ const Index = () => {
     description: string;
     onConfirm: () => void;
   } | null>(null);
+  const [showMobileImagePicker, setShowMobileImagePicker] = useState(false);
 
   // Check if this is a page refresh and show welcome screen only on refresh
   useEffect(() => {
@@ -417,6 +419,17 @@ const Index = () => {
     });
   };
 
+  const handleMobileImageSelect = (imageData: string) => {
+    // Open the add item form with the selected image
+    setShowMobileImagePicker(false);
+    setShowAddForm(true);
+    // You could also pre-fill the image URL in the form
+    toast({
+      title: "Image selected",
+      description: "Please fill in the item details."
+    });
+  };
+
   return (
     <>
       {showWelcome && (
@@ -427,7 +440,7 @@ const Index = () => {
         }} />
       )}
       
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 pt-24 p-4 space-y-6">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 pt-20 sm:pt-24 px-3 sm:px-4 space-y-4 sm:space-y-6">
         <WardrobeHeader 
           onAddItem={() => setShowAddCategoryForm(true)}
           searchTerm={searchTerm}
@@ -437,7 +450,7 @@ const Index = () => {
       
       <WardrobeStats stats={stats} />
 
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
         {showFilters && (
           <FilterPanel
             categories={categoryList}
@@ -454,54 +467,54 @@ const Index = () => {
         )}
 
         <div className="flex-1">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
             {filteredCategories.map(category => {
               const categoryItems = filteredItems.filter(item => item.category.toLowerCase() === category.toLowerCase());
               return (
-                <div key={category} className="bg-white border border-purple-200 rounded-xl shadow-md p-4 flex flex-col items-center aspect-square cursor-pointer hover:shadow-lg transition-all relative">
-                  <div className="flex items-center justify-between w-full mb-4">
+                <div key={category} className="bg-white border border-purple-200 rounded-xl shadow-md p-3 sm:p-4 flex flex-col items-center aspect-square cursor-pointer hover:shadow-lg transition-all relative">
+                  <div className="flex items-center justify-between w-full mb-2 sm:mb-4">
                     <Link to={`/category/${category}`} className="flex-1">
-                      <h2 className="text-lg font-bold text-purple-700 hover:text-purple-900 transition-colors">{category}</h2>
+                      <h2 className="text-sm sm:text-base lg:text-lg font-bold text-purple-700 hover:text-purple-900 transition-colors">{category}</h2>
                     </Link>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="text-red-500 hover:bg-red-100 rounded-full"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteCategory(category);
-                        }}
-                        title="Delete category"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </Button>
+                                              <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-red-500 hover:bg-red-100 rounded-full p-1 sm:p-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteCategory(category);
+                          }}
+                          title="Delete category"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3 sm:w-4 sm:h-4">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </Button>
                   </div>
                   <Link to={`/category/${category}`} className="flex-1 w-full flex items-center justify-center">
                     <div className="w-full h-full flex flex-col items-center justify-center">
                       <img 
                         src={categoryImages[category]} 
                         alt={category}
-                        className="w-32 h-32 object-cover rounded-lg mb-2"
+                        className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-cover rounded-lg mb-2"
                       />
-                      <div className="text-center text-purple-300 text-sm">{categoryItems.length === 0 ? "No items yet" : null}</div>
+                      <div className="text-center text-purple-300 text-xs sm:text-sm">{categoryItems.length === 0 ? "No items yet" : null}</div>
                     </div>
                   </Link>
                   {/* Render items in this category with delete button */}
                   {categoryItems.length > 0 && (
-                    <div className="w-full mt-2 flex flex-col gap-2">
+                    <div className="w-full mt-2 flex flex-col gap-1 sm:gap-2">
                       {categoryItems.map(item => (
-                        <div key={item.id} className="flex items-center justify-between bg-purple-50 rounded-lg px-3 py-1 shadow-sm">
-                          <span className="truncate text-purple-800 font-medium">{item.name}</span>
+                        <div key={item.id} className="flex items-center justify-between bg-purple-50 rounded-lg px-2 sm:px-3 py-1 shadow-sm">
+                          <span className="truncate text-purple-800 font-medium text-xs sm:text-sm">{item.name}</span>
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="text-red-500 hover:bg-red-100 ml-2"
+                            className="text-red-500 hover:bg-red-100 ml-1 sm:ml-2 p-1"
                             onClick={() => handleDeleteItem(item.id)}
                             title="Delete item"
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3 sm:w-4 sm:h-4">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                           </Button>
@@ -572,6 +585,24 @@ const Index = () => {
           confirmText="Delete"
           cancelText="Cancel"
           variant="danger"
+        />
+      )}
+
+      {/* Floating Action Button for Quick Image Upload */}
+      <Button
+        onClick={() => setShowMobileImagePicker(true)}
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-lg z-40 flex items-center justify-center"
+        title="Quick Upload"
+      >
+        <Camera className="w-6 h-6" />
+      </Button>
+
+      {/* Mobile Image Picker */}
+      {showMobileImagePicker && (
+        <MobileImagePicker
+          onImageSelect={handleMobileImageSelect}
+          onClose={() => setShowMobileImagePicker(false)}
+          title="Quick Upload"
         />
       )}
       </div>

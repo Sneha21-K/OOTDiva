@@ -103,3 +103,42 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile-specific optimizations */
+@layer utilities {
+  /* Prevent text selection on mobile for better UX */
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* Touch-friendly button sizes */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Smooth scrolling for mobile */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent zoom on input focus for iOS */
+  input, textarea, select {
+    font-size: 16px;
+  }
+
+  /* Better tap highlights */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Optimize for mobile performance */
+  .mobile-optimized {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+}

@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { ClothingItemType } from "@/types/wardrobe";
 import { useToast } from "@/hooks/use-toast";
+import { ImageUpload } from "./ImageUpload";
 
 interface AddItemFormProps {
   open: boolean;
@@ -138,15 +139,12 @@ export const AddItemForm = ({ open, onClose, onSubmit, editItem }: AddItemFormPr
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="imageUrl">Image URL</Label>
-            <Input
-              id="imageUrl"
-              value={formData.imageUrl}
-              onChange={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))}
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
+          <ImageUpload
+            value={formData.imageUrl}
+            onChange={(value) => setFormData(prev => ({ ...prev, imageUrl: value }))}
+            label="Item Image"
+            placeholder="Enter image URL or upload from device"
+          />
 
           <div className="space-y-2">
             <Label htmlFor="tags">Tags (comma separated)</Label>
