@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, ArrowLeft } from "lucide-react";
 import { AddOutfitForm } from "@/components/AddOutfitForm";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { ImageWithFallback } from "@/components/ImageWithFallback";
 import { Link } from "react-router-dom";
 import { Outfit, outfitsAPI } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
@@ -171,7 +172,12 @@ const Outfits = () => {
             className="bg-white border border-purple-200 rounded-2xl shadow-lg p-3 sm:p-4 flex flex-col items-center transition-transform hover:-translate-y-1 hover:shadow-2xl group relative"
           >
             <div className="aspect-square w-full bg-purple-50 rounded-xl overflow-hidden mb-3 border-2 border-purple-100 group-hover:border-purple-300 transition-all">
-              <img src={outfit.image_url || ''} alt={outfit.name} className="w-full h-full object-cover" />
+              <ImageWithFallback 
+                src={outfit.image_url || ''} 
+                alt={outfit.name} 
+                className="w-full h-full object-cover"
+                fallbackCategory="default"
+              />
             </div>
             <div className="text-purple-700 font-semibold text-sm sm:text-base lg:text-lg text-center font-sans group-hover:text-purple-900 transition-colors">
               {outfit.name}

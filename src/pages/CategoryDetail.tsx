@@ -5,21 +5,14 @@ import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { AddOutfitForm } from "@/components/AddOutfitForm";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { ClothingItem } from "@/components/ClothingItem";
+import { ImageWithFallback } from "@/components/ImageWithFallback";
 import { CategoryItem, categoryItemsAPI, uploadAPI, categoriesAPI } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
+import { getCategoryImage } from "@/utils/imageConstants";
 
-const CATEGORY_IMAGES = {
-  "Jeans": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop",
-  "Tops": "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=300&h=300&fit=crop",
-  "Skirts": "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=300&h=300&fit=crop",
-  "Shirts": "https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=300&h=300&fit=crop",
-  "Skorts": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=300&h=300&fit=crop",
-  "Shorts": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=300&fit=crop",
-  "Dress": "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=300&h=300&fit=crop",
-  "T-shirt": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
-  "Jackets": "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?w=300&h=300&fit=crop",
-  "Indian wear": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=300&fit=crop"
-};
+// Use centralized image constants
+import { DEFAULT_CATEGORY_IMAGES } from "@/utils/imageConstants";
+const CATEGORY_IMAGES = DEFAULT_CATEGORY_IMAGES;
 
 const CategoryDetail = () => {
   const { categoryName } = useParams();
@@ -262,7 +255,12 @@ const CategoryDetail = () => {
             className="bg-white border border-purple-200 rounded-2xl shadow-lg p-3 sm:p-4 flex flex-col items-center transition-transform hover:-translate-y-1 hover:shadow-2xl group relative"
           >
             <div className="aspect-square w-full bg-purple-50 rounded-xl overflow-hidden mb-3 border-2 border-purple-100 group-hover:border-purple-300 transition-all">
-              <img src={item.image_url || ''} alt={item.name} className="w-full h-full object-cover" />
+              <ImageWithFallback 
+                src={item.image_url || ''} 
+                alt={item.name} 
+                className="w-full h-full object-cover"
+                fallbackCategory={categoryName}
+              />
             </div>
             <div className="text-purple-700 font-semibold text-sm sm:text-base lg:text-lg text-center font-sans group-hover:text-purple-900 transition-colors">
               {item.name}
@@ -284,10 +282,11 @@ const CategoryDetail = () => {
       {items.length === 0 && (
         <div className="text-center py-8 sm:py-12">
           <div className="flex flex-col items-center">
-            <img 
-              src={CATEGORY_IMAGES[categoryName as keyof typeof CATEGORY_IMAGES] || CATEGORY_IMAGES["Jeans"]} 
+            <ImageWithFallback 
+              src={CATEGORY_IMAGES[categoryName as keyof typeof CATEGORY_IMAGES] || getCategoryImage(categoryName)} 
               alt={categoryName}
               className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-xl mb-4 opacity-60"
+              fallbackCategory={categoryName}
             />
             <p className="text-purple-300 text-base sm:text-lg">No items in this category yet.</p>
             <p className="text-purple-200 text-xs sm:text-sm mt-2">Click "Add Item" to get started!</p>

@@ -13,25 +13,19 @@ import { Plus, Camera } from "lucide-react";
 import { AddOutfitForm } from "@/components/AddOutfitForm";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { MobileImagePicker } from "@/components/MobileImagePicker";
+import { ImageWithFallback } from "@/components/ImageWithFallback";
 import { Link } from "react-router-dom";
 import WelcomeScreen from "@/components/WelcomeScreen";
+import { 
+  DEFAULT_CATEGORY_IMAGES, 
+  DEFAULT_SAMPLE_ITEMS, 
+  DEFAULT_CATEGORIES,
+  getCategoryImage 
+} from "@/utils/imageConstants";
+import { DataSyncManager } from "@/utils/dataSync";
 
-const CATEGORY_LIST = [
-  "Jeans", "Tops", "Skirts", "Shirts", "Skorts", "Shorts", "Dress", "T-shirt", "Jackets", "Indian wear"
-];
-
-const CATEGORY_IMAGES = {
-  "Jeans": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop",
-  "Tops": "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=300&h=300&fit=crop",
-  "Skirts": "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=300&h=300&fit=crop",
-  "Shirts": "https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=300&h=300&fit=crop",
-  "Skorts": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=300&h=300&fit=crop",
-  "Shorts": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=300&fit=crop",
-  "Dress": "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=300&h=300&fit=crop",
-  "T-shirt": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
-  "Jackets": "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?w=300&h=300&fit=crop",
-  "Indian wear": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=300&fit=crop"
-};
+const CATEGORY_LIST = DEFAULT_CATEGORIES;
+const CATEGORY_IMAGES = DEFAULT_CATEGORY_IMAGES;
 
 const Index = () => {
   const { toast } = useToast();
@@ -47,7 +41,7 @@ const Index = () => {
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [showAddCategoryForm, setShowAddCategoryForm] = useState(false);
   const [categoryList, setCategoryList] = useState<string[]>([]);
-  const [categoryImages, setCategoryImages] = useState(CATEGORY_IMAGES);
+  const [categoryImages, setCategoryImages] = useState<Record<string, string>>(CATEGORY_IMAGES);
   const [showAddItemToCategory, setShowAddItemToCategory] = useState(false);
   const [selectedCategoryForItem, setSelectedCategoryForItem] = useState("");
   const [hasShownDeleteWarning, setHasShownDeleteWarning] = useState(false);
@@ -86,66 +80,12 @@ const Index = () => {
 
   // Load categories and sample data on first visit
   useEffect(() => {
-    // Load categories from local storage or use default
-    const savedCategories = categoriesAPI.getCategories();
-    if (savedCategories.length > 0) {
-      setCategoryList(savedCategories);
-    } else {
-      // Initialize with default categories
-      CATEGORY_LIST.forEach(category => categoriesAPI.addCategory(category));
-      setCategoryList(CATEGORY_LIST);
-    }
-
-    // Load sample data on first visit
-    const sampleItems: ClothingItemType[] = [
-      {
-        id: "1",
-        name: "Classic White Button Shirt",
-        category: "Tops",
-        color: "White",
-        brand: "Zara",
-        season: "All",
-        isFavorite: true,
-        rating: 5,
-        wearCount: 15,
-        tags: ["professional", "versatile"],
-        imageUrl: "https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=300&h=300&fit=crop"
-      },
-      {
-        id: "2", 
-        name: "Black Leather Jacket",
-        category: "Jackets",
-        color: "Black",
-        brand: "AllSaints",
-        season: "Fall",
-        isFavorite: true,
-        rating: 5,
-        wearCount: 8,
-        tags: ["edgy", "casual"],
-        imageUrl: "https://images.unsplash.com/photo-1535268647677-300390c465d1?w=300&h=300&fit=crop"
-      },
-      {
-        id: "3",
-        name: "Blue Denim Jeans",
-        category: "Jeans", 
-        color: "Blue",
-        brand: "Levi's",
-        season: "All",
-        isFavorite: false,
-        rating: 4,
-        wearCount: 25,
-        tags: ["casual", "everyday"],
-        imageUrl: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=300&h=300&fit=crop"
-      }
-    ];
+    // Initialize data with consistent defaults
+    const syncData = DataSyncManager.initializeData();
     
-    const savedItems = localStorage.getItem('wardrobeItems');
-    if (savedItems) {
-      setItems(JSON.parse(savedItems));
-    } else {
-      setItems(sampleItems);
-      localStorage.setItem('wardrobeItems', JSON.stringify(sampleItems));
-    }
+    setCategoryList(syncData.categories);
+    setCategoryImages(syncData.categoryImages);
+    setItems(syncData.items);
   }, []);
 
   // Save items to localStorage whenever items change
@@ -213,7 +153,9 @@ const Index = () => {
       ...newItem,
       id: Date.now().toString()
     };
-    setItems(prev => [...prev, item]);
+    const updatedItems = [...items, item];
+    setItems(updatedItems);
+    DataSyncManager.saveItems(updatedItems);
   };
 
   const handleEditItem = (item: ClothingItemType) => {
@@ -223,11 +165,13 @@ const Index = () => {
 
   const handleUpdateItem = (updatedItem: Omit<ClothingItemType, 'id'>) => {
     if (editingItem) {
-      setItems(prev => prev.map(item => 
+      const updatedItems = items.map(item => 
         item.id === editingItem.id 
           ? { ...updatedItem, id: editingItem.id }
           : item
-      ));
+      );
+      setItems(updatedItems);
+      DataSyncManager.saveItems(updatedItems);
       setEditingItem(null);
     }
   };
@@ -243,7 +187,9 @@ const Index = () => {
         description: `This action will permanently delete ${itemName}. This cannot be undone.\n\nYou will see this warning only once per session.`,
         onConfirm: () => {
           setHasShownDeleteWarning(true);
-          setItems(prev => prev.filter(item => item.id !== id));
+          const updatedItems = items.filter(item => item.id !== id);
+          setItems(updatedItems);
+          DataSyncManager.saveItems(updatedItems);
           toast({
             title: "Item deleted",
             description: "The item has been removed from your wardrobe."
@@ -258,7 +204,9 @@ const Index = () => {
       title: "Delete Item",
       description: `Are you sure you want to delete "${itemName}"? This action cannot be undone.`,
       onConfirm: () => {
-        setItems(prev => prev.filter(item => item.id !== id));
+        const updatedItems = items.filter(item => item.id !== id);
+        setItems(updatedItems);
+        DataSyncManager.saveItems(updatedItems);
         toast({
           title: "Item deleted",
           description: "The item has been removed from your wardrobe."
@@ -409,7 +357,9 @@ const Index = () => {
       wearCount: 0
     };
     
-    setItems(prev => [...prev, newItem]);
+    const updatedItems = [...items, newItem];
+    setItems(updatedItems);
+    DataSyncManager.saveItems(updatedItems);
     setShowAddItemToCategory(false);
     setSelectedCategoryForItem("");
     
@@ -493,10 +443,11 @@ const Index = () => {
                   </div>
                   <Link to={`/category/${category}`} className="flex-1 w-full flex items-center justify-center">
                     <div className="w-full h-full flex flex-col items-center justify-center">
-                      <img 
-                        src={categoryImages[category]} 
+                      <ImageWithFallback 
+                        src={categoryImages[category] || getCategoryImage(category)} 
                         alt={category}
                         className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-cover rounded-lg mb-2"
+                        fallbackCategory={category}
                       />
                       <div className="text-center text-purple-300 text-xs sm:text-sm">{categoryItems.length === 0 ? "No items yet" : null}</div>
                     </div>
